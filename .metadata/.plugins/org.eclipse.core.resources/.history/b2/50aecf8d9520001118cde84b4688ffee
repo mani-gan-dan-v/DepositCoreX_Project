@@ -1,0 +1,5 @@
+package com.cts.project.entity;
+
+public class DepositReport {
+
+}
