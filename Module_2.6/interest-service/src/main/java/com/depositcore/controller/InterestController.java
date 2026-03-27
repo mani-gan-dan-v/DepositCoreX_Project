@@ -1,33 +1,30 @@
 package com.depositcore.controller;
 
-import com.depositcore.dto.*;
+import com.depositcore.dto.InterestRequestDTO;
+import com.depositcore.dto.InterestResponseDTO;
 import com.depositcore.service.InterestService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
 @RestController
-@RequestMapping("/api/interest")
+@RequestMapping("/interest")
 public class InterestController {
 
-    private final InterestService service;
+    @Autowired
+    private InterestService interestService;
 
-    public InterestController(InterestService service) {
-        this.service = service;
-    }
-
-    // Calculate + Accrue
     @PostMapping("/accrue")
-    public InterestResponseDTO accrueInterest(@RequestBody InterestRequestDTO request) {
-        return service.createAccrual(request);
+    public InterestResponseDTO accrue(@RequestBody InterestRequestDTO request) {
+        return interestService.createAccrual(request);
     }
 
-    // Post Interest
-    @PostMapping("/post/{accountId}")
-    public InterestResponseDTO postInterest(
-            @PathVariable Long accountId,
+    @PostMapping("/post")
+    public InterestResponseDTO post(
+            @RequestParam Long accountId,
             @RequestParam BigDecimal amount) {
 
-        return service.postInterest(accountId, amount);
+        return interestService.postInterest(accountId, amount);
     }
 }
