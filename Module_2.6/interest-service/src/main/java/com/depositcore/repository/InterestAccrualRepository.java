@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface InterestAccrualRepository extends JpaRepository<InterestAccrual, Long> {
+
+    InterestAccrual findTopByAccountIdOrderByCalculatedDateDesc(Long accountId);
 }

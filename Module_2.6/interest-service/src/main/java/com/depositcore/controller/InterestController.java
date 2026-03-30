@@ -3,6 +3,8 @@ package com.depositcore.controller;
 import com.depositcore.dto.InterestRequestDTO;
 import com.depositcore.dto.InterestResponseDTO;
 import com.depositcore.service.InterestService;
+
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,15 +18,14 @@ public class InterestController {
     private InterestService interestService;
 
     @PostMapping("/accrue")
-    public InterestResponseDTO accrue(@RequestBody InterestRequestDTO request) {
+    public InterestResponseDTO accrue(@Valid @RequestBody InterestRequestDTO request) {
         return interestService.createAccrual(request);
     }
 
     @PostMapping("/post")
     public InterestResponseDTO post(
-            @RequestParam Long accountId,
-            @RequestParam BigDecimal amount) {
+            @RequestParam Long accountId) {
 
-        return interestService.postInterest(accountId, amount);
+        return interestService.postInterest(accountId);
     }
 }
