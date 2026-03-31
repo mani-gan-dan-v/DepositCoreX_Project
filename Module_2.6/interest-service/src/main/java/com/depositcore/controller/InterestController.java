@@ -2,7 +2,9 @@ package com.depositcore.controller;
 
 import com.depositcore.dto.InterestRequestDTO;
 import com.depositcore.dto.InterestResponseDTO;
+import com.depositcore.entity.PostingType;
 import com.depositcore.service.InterestService;
+import com.depositcore.entity.PostingType;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +26,8 @@ public class InterestController {
 
     @PostMapping("/post")
     public InterestResponseDTO post(
-            @RequestParam Long accountId) {
+            @RequestParam Long accountId, @RequestParam PostingType postingType) {
 
-        return interestService.postInterest(accountId);
+        return interestService.postInterest(accountId,postingType);
     }
 }

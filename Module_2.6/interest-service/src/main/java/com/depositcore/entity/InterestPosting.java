@@ -1,6 +1,9 @@
 package com.depositcore.entity;
 import jakarta.persistence.*;
 import lombok.*;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import com.depositcore.entity.PostingType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,7 +31,8 @@ public class InterestPosting {
     private BigDecimal amount;
 
     @Column(nullable = false)
-    private String postingType;  //CASA /FD/ RD
+    @Enumerated(EnumType.STRING)
+    private PostingType postingType;  //CASA /FD/ RD
 
 
 }

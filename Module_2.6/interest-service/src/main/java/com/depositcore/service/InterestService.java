@@ -2,8 +2,10 @@ package com.depositcore.service;
 
 import com.depositcore.dto.*;
 import com.depositcore.entity.*;
+import com.depositcore.exception.ResourceNotFoundException;
 import com.depositcore.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -67,21 +69,27 @@ public class InterestService {
                 .build();
     }
 
-    public InterestResponseDTO postInterest(Long accountId) {
+    @Transactional
+    public InterestResponseDTO postInterest(Long accountId, PostingType postingType) {
 
         InterestAccrual accrual = accrualRepo
                 .findTopByAccountIdOrderByCalculatedDateDesc(accountId);
 
         if (accrual == null) {
-            throw new RuntimeException("No accrual found for account");
+            throw new ResourceNotFoundException("No accrual found for account");
         }
 
         InterestPosting posting = InterestPosting.builder()
                 .accountId(accountId)
                 .amount(accrual.getInterestAmount())
                 .postingDate(LocalDateTime.now())
-                .postingType("CASA")
+                .postingType(postingType)
                 .build();
+
+        boolean alreadyPosted = postingRepo.existsByAccountId(accountId);
+        if(alreadyPosted){
+            throw new IllegalStateException("Interest already posted for this account");
+        }
 
         postingRepo.save(posting);
 
