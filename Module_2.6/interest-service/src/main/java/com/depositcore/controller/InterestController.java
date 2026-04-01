@@ -4,7 +4,6 @@ import com.depositcore.dto.InterestRequestDTO;
 import com.depositcore.dto.InterestResponseDTO;
 import com.depositcore.entity.PostingType;
 import com.depositcore.service.InterestService;
-import com.depositcore.entity.PostingType;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,6 +3,7 @@ package com.depositcore.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -45,6 +46,19 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<String>handleIllegalState(IllegalStateException ex){
         return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<String> handleEnumError(MethodArgumentTypeMismatchException ex) {
+
+        if (ex.getRequiredType() != null && ex.getRequiredType().isEnum()) {
+            return new ResponseEntity<>(
+                    "Invalid value for " + ex.getName() + ". Allowed values: CASA, FD, RD",
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
+        return new ResponseEntity<>("Invalid request parameter", HttpStatus.BAD_REQUEST);
     }
 
 }

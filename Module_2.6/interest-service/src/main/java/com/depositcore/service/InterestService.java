@@ -45,6 +45,7 @@ public class InterestService {
 
 
     // Create Accrual
+    @Transactional
     public InterestResponseDTO createAccrual(InterestRequestDTO request) {
 
         BigDecimal interest = calculateInterest(
@@ -79,6 +80,14 @@ public class InterestService {
             throw new ResourceNotFoundException("No accrual found for account");
         }
 
+        boolean alreadyPosted = postingRepo.existsByAccountId(accountId)
+                &&
+                accrualRepo.findTopByAccountIdOrderByCalculatedDateDesc(accountId)!=null;
+
+        if(alreadyPosted){
+            throw new IllegalStateException("Interest already posted for this account");
+        }
+
         InterestPosting posting = InterestPosting.builder()
                 .accountId(accountId)
                 .amount(accrual.getInterestAmount())
@@ -86,10 +95,6 @@ public class InterestService {
                 .postingType(postingType)
                 .build();
 
-        boolean alreadyPosted = postingRepo.existsByAccountId(accountId);
-        if(alreadyPosted){
-            throw new IllegalStateException("Interest already posted for this account");
-        }
 
         postingRepo.save(posting);
 
