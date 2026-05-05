@@ -1,0 +1,25 @@
+package com.depositcorex.Main.Repository;
+
+
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import com.depositcorex.Main.Entities.DepositAccount;
+import com.depositcorex.Main.Entities.HoldOrLien;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+@Repository
+public interface HoldRepository extends JpaRepository<HoldOrLien, Long> {
+
+    // Find all active holds/liens for a specific account
+    List<HoldOrLien> findByAccountAndStatus(DepositAccount account, String status);
+
+    // Custom JPQL query to sum up all ACTIVE hold amounts for an account
+    @Query("SELECT SUM(h.amount) FROM HoldOrLien h WHERE h.account.accountId = :accountId AND h.status = 'ACTIVE'")
+    BigDecimal sumActiveHolds(@Param("accountId") Long accountId);
+}
